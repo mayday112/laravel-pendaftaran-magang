@@ -29,7 +29,7 @@ class ManageUserController extends Controller
                     return $row['updated_at']->format('D, d/m/Y H:i:s');
                 })->editColumn('foto', function ($row) {
                     $foto = $row->photo_path ? Storage::url("foto profil/{$row->photo_path}") : asset('img/avatar/avatar-3.png');
-                    return '<div style="width:30px;height:30px;overflow:hidden;border-radius:50%"><img src="' . $foto . '" alt=""  style="width:30px;"></div>';
+                    return '<div style="width:30px;height:30px;overflow:hidden;border-radius:50%"><img src="' . $foto . '" alt=""  style="width:30px;height:30px;object-fit:cover;"></div>';
                 })
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
