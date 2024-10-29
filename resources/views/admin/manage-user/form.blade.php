@@ -102,15 +102,15 @@
                                         <label>Role</label>
                                         <select name="role" class="form-control select2">
                                             {{-- cek dulu route, jika route adalah edit data user-->cek option yg akan di selected --}}
-                                            <option value="client"
+                                            <option value="intern"
                                                 {{ old('role', Route::is('manage-user.edit') ? $user['role'] : '') == 'intern' ? 'selected' : '' }}>
-                                                peserta magang</option>
+                                                Peserta magang</option>
                                             <option value="admin"
                                                 {{ old('role', Route::is('manage-user.edit') ? $user['role'] : '') == 'admin' ? 'selected' : '' }}>
-                                                admin</option>
+                                                Admin</option>
                                             <option value="staff"
                                                 {{ old('role', Route::is('manage-user.edit') ? $user['role'] : '') == 'staff' ? 'selected' : '' }}>
-                                                staff</option>
+                                                Staff</option>
                                         </select>
                                         @error('role')
                                             <div class="invalid-feedback">
