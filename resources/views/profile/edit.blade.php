@@ -103,11 +103,13 @@
                                         {{-- username --}}
                                         <div class="form-group col-md-6 col-lg-10 col-12">
                                             <label>Username</label>
-                                            <input type="text" name="username" class="form-control"
+                                            <input type="text" name="username" class="form-control @error('username') is-invalid @enderror"
                                                 value="{{ old('username', $user->username) }}" required="">
-                                            <div class="invalid-feedback">
-                                                Please fill in the first username
-                                            </div>
+                                            @error('username')
+                                                <div class="invalid-feedback">
+                                                    {{ $message }}
+                                                </div>
+                                            @enderror
                                         </div>
                                     </div>
                                     {{-- foto profil --}}

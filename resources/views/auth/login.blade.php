@@ -50,6 +50,7 @@
 @push('style')
     <!-- CSS Libraries -->
     <link rel="stylesheet" href="{{ asset('library/bootstrap-social/bootstrap-social.css') }}">
+    {!! ReCaptcha::htmlScriptTagJsApi() !!}
 @endpush
 
 @section('main')
@@ -77,7 +78,7 @@
                             Please fill in your username
                         </div>
                     @enderror
-                </div>
+                    </div>
 
                 {{-- password --}}
                 <div class="form-group">
@@ -97,7 +98,10 @@
                         <label class="custom-control-label" for="remember-me">Remember Me</label>
                     </div>
                 </div>
-
+                {{-- recapthca --}}
+                <div class="form-group">
+                    {!! htmlFormSnippet() !!} 
+                </div>
                 {{-- submit --}}
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary btn-lg btn-block" tabindex="4">
@@ -105,6 +109,7 @@
                     </button>
                 </div>
             </form>
+
             <div class="text-muted mt-5 text-center">
                 Untuk Calon pendaftar magang klik &raquo; <a href="{{ route('register') }}">Buat Akun</a>
             </div>

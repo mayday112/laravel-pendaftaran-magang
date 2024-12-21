@@ -2,16 +2,13 @@
 
 use App\Http\Controllers\Admin\ManageUserController;
 use App\Http\Controllers\Intern\RegistInternController;
-use App\Http\Controllers\InternshipController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Staff\ManageInternsController;
 use App\Http\Middleware\CanEditInterns;
 use App\Http\Middleware\IsAdmin;
 use App\Http\Middleware\IsAlreadyRegistInternship;
 use App\Http\Middleware\IsIntern;
-use App\Http\Middleware\IsStaff;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Storage;
 
 Route::get('/', function () {
     // return view('welcome');

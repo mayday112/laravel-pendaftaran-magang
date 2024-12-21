@@ -54,27 +54,23 @@
                                             <p>Klik icon <i class="fas fa-bars"></i> pada pojok kiri atas untuk memunculkan
                                                 icon menu magang</p>
                                         @endif
-
                                     </div>
                                 </div>
                             </div>
                         </div>
-        </section>
-    </div>
-    </div>
-@else
-    <div class="col-12 mb-4">
-        <div class="hero bg-primary text-white">
-            <div class="hero-inner">
-                <h2>Welcome Back, {{ Auth::user()->name }}!</h2>
-                <p class="lead">This page is a place to manage posts, categories and more.</p>
+                    @else
+                        <div class="col-12 mb-4">
+                            <div class="hero bg-primary text-white">
+                                <div class="hero-inner">
+                                    <h2>Welcome Back, {{ Auth::user()->name }}!</h2>
+                                    <p class="lead">This page is a place to manage posts, categories and more.</p>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                </div>
             </div>
-        </div>
-    </div>
-    @endif
-    </div>
-    </div>
-    </section>
+        </section>
     </div>
 @endsection
 

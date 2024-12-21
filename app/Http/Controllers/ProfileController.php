@@ -60,6 +60,8 @@ class ProfileController extends Controller
     {
         $request->validateWithBag('userDeletion', [
             'password' => ['required', 'current_password'],
+        ],[
+            'password.unique' => 'Username sudah ada'
         ]);
 
         $user = $request->user();
