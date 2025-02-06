@@ -6,9 +6,13 @@ use App\Models\Internship;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
+use App\Exports\InternshipsExport;
 use App\Http\Controllers\Controller;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Date;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
+// use Illuminate\Container\Attributes\Storage;
 
 class ManageInternsController extends Controller
 {
@@ -152,5 +156,31 @@ class ManageInternsController extends Controller
         } else {
             return abort(404, 'File Not Found');
         }
+    }
+
+    public function exportToExcel()
+    {
+        return Excel::download(new InternshipsExport, 'data-pendaftaran-magang-' . Date::now()->format('d-M-Y') . '.xlsx');
+    }
+
+    public function exportToPDF()
+    {
+        return Excel::download(new InternshipsExport, 'data.pdf',  \Maatwebsite\Excel\Excel::DOMPDF);
+    }
+
+    public function exportToPDFWithDOMPDF()
+    {
+        $datas = Internship::all();
+        $pdf = Pdf::loadView('staff.manage-interns.pdf', ['datas' => $datas]);
+
+        return $pdf->stream('data.pdf');
+    }
+
+    public function exportDataToPDF($id)
+    {
+        $internship = Internship::find($id);
+        if (!$internship) return redirect()->route('manage-magang');
+
+        $pdf = Pdf::loadView('', ['data' => $internship]);
     }
 }

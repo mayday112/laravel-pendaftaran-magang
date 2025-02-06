@@ -9,6 +9,7 @@ use App\Http\Middleware\IsAdmin;
 use App\Http\Middleware\IsAlreadyRegistInternship;
 use App\Http\Middleware\IsIntern;
 use Illuminate\Support\Facades\Route;
+use Maatwebsite\Excel\Row;
 
 Route::get('/', function () {
     // return view('welcome');
@@ -32,7 +33,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/magang/{Internship:id}', [ManageInternsController::class, 'edit'])->name('edit-magang');
         Route::put('/magang/{Internship:id}', [ManageInternsController::class, 'update'])->name('update-magang');
         Route::delete('/magang/{Internship:id}', [ManageInternsController::class, 'destroy'])->name('delete-magang');
-        // Route::get('download-surat-pengantar/{namaFile}', [ManageInternsController::class, 'download'])->name('download-surat-pengantar');
+        Route::get('/magang-download-data-excel', [ManageInternsController::class, 'exportToExcel'])->name('export-excel');
+        Route::get('/magang-download-data-pdf', [ManageInternsController::class, 'exportToPDF'])->name('export-pdf');
+        Route::get('/magang-download-data-dompdf', [ManageInternsController::class, 'exportToPDFWithDOMPDF'])->name('export-dompdf');
     });
     //interns
     Route::middleware([IsIntern::class])->group(function () {
@@ -51,4 +54,7 @@ Route::middleware('auth')->group(function () {
     });
 });
 
+Route::get('/test', function(){
+    return view('staff.manage-interns.pdf');
+});
 require __DIR__ . '/auth.php';

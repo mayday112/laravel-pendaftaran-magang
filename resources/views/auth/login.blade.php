@@ -50,7 +50,7 @@
 @push('style')
     <!-- CSS Libraries -->
     <link rel="stylesheet" href="{{ asset('library/bootstrap-social/bootstrap-social.css') }}">
-    {!! ReCaptcha::htmlScriptTagJsApi() !!}
+    {{-- {!! ReCaptcha::htmlScriptTagJsApi() !!} --}}
 @endpush
 
 @section('main')
@@ -98,10 +98,7 @@
                         <label class="custom-control-label" for="remember-me">Remember Me</label>
                     </div>
                 </div>
-                {{-- recapthca --}}
-                <div class="form-group">
-                    {!! htmlFormSnippet() !!} 
-                </div>
+
                 {{-- submit --}}
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary btn-lg btn-block" tabindex="4">

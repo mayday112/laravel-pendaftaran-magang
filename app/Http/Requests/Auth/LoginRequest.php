@@ -29,7 +29,6 @@ class LoginRequest extends FormRequest
         return [
             'username' => ['required', 'string'],
             'password' => ['required', 'string'],
-            'g-recaptcha-response' => 'recaptcha',
         ];
     }
 
