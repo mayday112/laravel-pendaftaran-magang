@@ -72,6 +72,11 @@ class ManageInternsController extends Controller
                                 <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
                               </svg>
                             </a>
+                            <a href="' . route('pdf-single-data', $row['id']) . '" class="btn btn-sm btn-light">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/>
+                              </svg>
+                            </a>
 
                           <button type="submit" class="btn btn-sm btn-light" onclick=" return confirm(\'Apakah anda Yakin?\') ">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
@@ -163,17 +168,12 @@ class ManageInternsController extends Controller
         return Excel::download(new InternshipsExport, 'data-pendaftaran-magang-' . Date::now()->format('d-M-Y') . '.xlsx');
     }
 
-    public function exportToPDF()
-    {
-        return Excel::download(new InternshipsExport, 'data.pdf',  \Maatwebsite\Excel\Excel::DOMPDF);
-    }
-
     public function exportToPDFWithDOMPDF()
     {
         $datas = Internship::all();
         $pdf = Pdf::loadView('staff.manage-interns.pdf', ['datas' => $datas]);
 
-        return $pdf->stream('data.pdf');
+        return $pdf->download('data.pdf');
     }
 
     public function exportDataToPDF($id)
@@ -181,6 +181,8 @@ class ManageInternsController extends Controller
         $internship = Internship::find($id);
         if (!$internship) return redirect()->route('manage-magang');
 
-        $pdf = Pdf::loadView('', ['data' => $internship]);
+        $pdf = Pdf::loadView('staff.manage-interns.pdf-single', ['data' => $internship]);
+        $pdf->setPaper('a4');
+        return $pdf->download('single-data.pdf');
     }
 }

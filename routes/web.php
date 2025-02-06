@@ -8,6 +8,7 @@ use App\Http\Middleware\CanEditInterns;
 use App\Http\Middleware\IsAdmin;
 use App\Http\Middleware\IsAlreadyRegistInternship;
 use App\Http\Middleware\IsIntern;
+use App\Models\Internship;
 use Illuminate\Support\Facades\Route;
 use Maatwebsite\Excel\Row;
 
@@ -36,6 +37,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/magang-download-data-excel', [ManageInternsController::class, 'exportToExcel'])->name('export-excel');
         Route::get('/magang-download-data-pdf', [ManageInternsController::class, 'exportToPDF'])->name('export-pdf');
         Route::get('/magang-download-data-dompdf', [ManageInternsController::class, 'exportToPDFWithDOMPDF'])->name('export-dompdf');
+        Route::get('magang/data/{Internship:id}', [ManageInternsController::class, 'exportDataToPDF'])->name('pdf-single-data');
     });
     //interns
     Route::middleware([IsIntern::class])->group(function () {
@@ -55,6 +57,7 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/test', function(){
-    return view('staff.manage-interns.pdf');
+    return view('staff.manage-interns.pdf-single', ['data' => Internship::all()->first()]);
 });
+
 require __DIR__ . '/auth.php';

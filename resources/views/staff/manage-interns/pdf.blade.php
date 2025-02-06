@@ -7,9 +7,6 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <!-- General CSS Files -->
-    <link href="{{ asset('library/bootstrap/dist/css/bootstrap.min.css') }}" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <!-- General CSS Files -->
     <link rel="stylesheet" href="{{ asset('library/bootstrap/dist/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
         integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="
@@ -43,7 +40,7 @@
     <div class="container">
         <h3>Data Pendaftaran Magang</h3>
 
-        <table class="table table-bordered mt-3" style="border: 1px solid black;">
+        <table class="table mt-3">
             <thead>
                 <tr>
                     <th> Nama</th>
