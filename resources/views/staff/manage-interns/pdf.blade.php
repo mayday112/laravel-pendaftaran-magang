@@ -31,7 +31,7 @@
 
         td,
         th {
-            padding: 8px 20px;
+            padding: 5px 10px;
         }
     </style>
 </head>
@@ -62,8 +62,8 @@
                         <td>{{ $data->jurusan }}</td>
                         <td>{{ $data->asal_institusi }}</td>
                         <td>{{ $data->bidang_diambil }}</td>
-                        <td>{{ $data->tanggal_awal_magang }}</td>
-                        <td>{{ $data->tanggal_akhir_magang }}</td>
+                        <td>{{ $data->tanggal_awal_magang->format('d-M-Y') }}</td>
+                        <td>{{ $data->tanggal_akhir_magang->format('d-M-Y') }}</td>
                     </tr>
                 @empty
                 @endforelse
