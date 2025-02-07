@@ -54,36 +54,6 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>Bakhit</td>
-                    <td>123456789</td>
-                    <td>08123231312</td>
-                    <td>Penggilingan Padi</td>
-                    <td>Universitas Batu Duduk</td>
-                    <td>Inti Bumi</td>
-                    <td>12-12-2024</td>
-                    <td>12-3-2025</td>
-                </tr>
-                <tr>
-                    <td>Ridho Ohdir</td>
-                    <td>123456789</td>
-                    <td>08123231312</td>
-                    <td>Penggilingan Gandum</td>
-                    <td>Universitas Batu Duduk</td>
-                    <td>Inti Atom</td>
-                    <td>12-12-2024</td>
-                    <td>12-3-2025</td>
-                </tr>
-                <tr>
-                    <td>Fajaruddin</td>
-                    <td>123456789</td>
-                    <td>08123231312</td>
-                    <td>Penggilingan Gemuk</td>
-                    <td>Universitas Batu Duduk</td>
-                    <td>Inti Sepeda Motor</td>
-                    <td>12-12-2024</td>
-                    <td>12-3-2025</td>
-                </tr>
                 @forelse ($datas as $data)
                     <tr>
                         <td>{{ $data->user->name }}</td>
