@@ -9,9 +9,6 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use PhpParser\Node\Expr\FuncCall;
-
-use function PHPUnit\Framework\returnSelf;
 
 class RegistInternController extends Controller
 {

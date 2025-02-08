@@ -1,16 +1,17 @@
 <?php
 
-use App\Http\Controllers\Admin\ManageUserController;
-use App\Http\Controllers\Intern\RegistInternController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Staff\ManageInternsController;
-use App\Http\Middleware\CanEditInterns;
-use App\Http\Middleware\IsAdmin;
-use App\Http\Middleware\IsAlreadyRegistInternship;
-use App\Http\Middleware\IsIntern;
 use App\Models\Internship;
-use Illuminate\Support\Facades\Route;
 use Maatwebsite\Excel\Row;
+use App\Http\Middleware\IsAdmin;
+use App\Http\Middleware\IsIntern;
+use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\CanEditInterns;
+use App\Http\Controllers\ProfileController;
+use App\Http\Middleware\IsAlreadyRegistInternship;
+use App\Http\Controllers\Admin\ManageUserController;
+use App\Http\Controllers\Intern\AddReportWeekController;
+use App\Http\Controllers\Intern\RegistInternController;
+use App\Http\Controllers\Staff\ManageInternsController;
 
 Route::get('/', function () {
     // return view('welcome');
@@ -52,6 +53,10 @@ Route::middleware('auth')->group(function () {
             Route::post('intern/edit', [RegistInternController::class, 'update'])->name('intern-update-data');
 
             Route::get('intern/download-nilai/{Internship:nilai_magang}', [RegistInternController::class, 'download'])->name('intern-download-nilai');
+
+            Route::resource('report-weeks', AddReportWeekController::class);
+            Route::get('report-week/export-to-pdf', [AddReportWeekController::class, 'exportToPDF'])->name('report-to-pdf');
+            Route::get('report-week/export-to-excel', [AddReportWeekController::class, 'exportToExcel'])->name('report-to-excel');
         });
     });
 });

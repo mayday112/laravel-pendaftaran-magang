@@ -15,8 +15,8 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <a href="{{ route('export-excel') }}" class="btn btn-primary mb-5 float-end">Export to Excel</a>
-                    <a href="{{ route('export-dompdf') }}" class="btn btn-primary mb-5 float-end">Export to PDF</a>
+                    <a href="{{ route('export-excel') }}" class="btn btn-success mb-5 float-end">Export to Excel</a>
+                    <a href="{{ route('export-dompdf') }}" class="btn btn-danger mb-5 float-end">Export to PDF</a>
                     <table class="table table-striped" id="myTable">
                         <thead>
                             <tr>

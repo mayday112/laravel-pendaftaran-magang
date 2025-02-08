@@ -24,6 +24,9 @@
                 <li class="nav-item {{ $type_menu === 'magang-user' ? 'active' : '' }}">
                     <a href="{{ route('intern') }}" class="nav-link"><i class="fas fa-tasks"></i><span>Magang</span></a>
                 </li>
+                <li class="nav-item {{ $type_menu === 'laporan' ? 'active' : '' }}">
+                    <a href="{{ route('report-weeks.index') }}" class="nav-link"><i class="fas fa-tasks"></i><span>Laporan</span></a>
+                </li>
             @endif
         </ul>
     </aside>

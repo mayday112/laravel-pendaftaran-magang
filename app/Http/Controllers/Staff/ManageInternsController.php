@@ -12,7 +12,6 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Date;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
-// use Illuminate\Container\Attributes\Storage;
 
 class ManageInternsController extends Controller
 {
@@ -41,14 +40,6 @@ class ManageInternsController extends Controller
                     return '<a href="' . Storage::url('surat pengantar/' . $row['surat_pengantar']) . '" target="_blank"> ' . Str::limit($row['surat_pengantar'], 5) . ' </a>';
                 })
                 ->editColumn('approve_magang', function ($row) {
-
-                    // return '<form action="'. route('edit-magang', $row['id']).'">'.csrf_field(). method_field('PUT')
-                    //     .'<select name="" class="badge badge-primary">'
-                    //     . '<option value="'.$row['approve_magang'].'">'.$row['approve_magang'].'</option>'
-                    //     . '<option value="diterima">Terima</option>'
-                    //     . '<option value="ditolak">Tolak</option>'
-                    //     .'</select>'
-                    //     .'</form>';
                     if ($row['approve_magang'] === 'diproses') {
                         return '<div class="badge badge-primary">' . $row['approve_magang'] . '</div>';
                     } else if ($row['approve_magang'] == 'diterima') {
