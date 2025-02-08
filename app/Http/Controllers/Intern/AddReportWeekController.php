@@ -189,5 +189,7 @@ class AddReportWeekController extends Controller
         return $pdf->stream('data.pdf');
     }
 
-    public function exportToExcel() {}
+    public function exportToExcel() {
+        return 'fitur belum ada';
+    }
 }
