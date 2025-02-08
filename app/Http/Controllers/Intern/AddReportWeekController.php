@@ -168,9 +168,9 @@ class AddReportWeekController extends Controller
 
     public function exportToPDF()
     {
-        $reportWeek = ReportWeek::all();
+        $reportWeek = ReportWeek::where('internship_id', Auth::user()->internship->id)->get();
         // dd(base64_encode(Storage::url($reportWeek[0]->foto)));
-        $report = array();
+        // $report = array();
         foreach ($reportWeek as $data) {
 
             $path = $data->foto; // Path relatif terhadap storage/app/public
