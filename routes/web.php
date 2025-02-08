@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\ManageUserController;
 use App\Http\Controllers\Intern\AddReportWeekController;
 use App\Http\Controllers\Intern\RegistInternController;
 use App\Http\Controllers\Staff\ManageInternsController;
+use App\Models\ReportWeek;
 
 Route::get('/', function () {
     // return view('welcome');
@@ -62,7 +63,8 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/test', function(){
-    return view('staff.manage-interns.pdf-single', ['data' => Internship::all()->first()]);
+    $data = ReportWeek::all();
+    return view('intern.report_weeks.pdf', ['datas' => $data]);
 });
 
 require __DIR__ . '/auth.php';

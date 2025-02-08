@@ -20,6 +20,7 @@
         table {
             border-collapse: collapse;
             margin-top: 10px;
+            width: 80%;
         }
 
         table,
@@ -40,19 +41,19 @@
     <div class="container">
         <h3>Laporan Magang</h3>
 
-        <table class="table mt-3">
+        <table class="table mt-3" >
             <thead>
                 <tr>
-                    <th> Tanggal dibuat</th>
-                    <th> Foto</th>
-                    <th> Deskripsi</th>
+                    <th style="width: 20%;"> Tanggal dibuat</th>
+                    <th style="width: 30%;"> Foto</th>
+                    <th style="width: 50%;"> Deskripsi</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse ($datas as $data)
                     <tr>
                         <td>{{ $data->created_at->format('d-M-Y') }}</td>
-                        <td><img src="{{ Storage::disk('public')->url($data->foto) }}"
+                        <td><img src="{{ $data->foto }}"
                                 style="width: 100px;object-fit: center;" alt=""></td>
                         <td>{!! $data->deskripsi !!}</td>
                     </tr>
