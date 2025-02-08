@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Intern;
 
+use App\Exports\ReportExport;
 use App\Models\ReportWeek;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -11,6 +12,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
+
 use function PHPUnit\Framework\returnSelf;
 use PATHINFO_MIME_TYPE;
 
@@ -186,10 +189,11 @@ class AddReportWeekController extends Controller
         // dd($reportWeek);
         $pdf = Pdf::loadView('intern.report_weeks.pdf', ['datas' => $reportWeek]);
 
-        return $pdf->stream('data.pdf');
+        return $pdf->download('data-laporan-' . Auth::user()->name . '.pdf');
     }
 
-    public function exportToExcel() {
-        return 'fitur belum ada';
+    public function exportToExcel()
+    {
+        return Excel::download(new ReportExport(), 'Laporan-' . Auth::user()->name . '.xlsx');
     }
 }
