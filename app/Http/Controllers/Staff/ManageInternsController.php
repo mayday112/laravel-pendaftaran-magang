@@ -2,16 +2,21 @@
 
 namespace App\Http\Controllers\Staff;
 
+use Carbon\Carbon;
+use App\Models\User;
 use App\Models\Internship;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Yajra\DataTables\DataTables;
 use App\Exports\InternshipsExport;
 use App\Http\Controllers\Controller;
-use Barryvdh\DomPDF\Facade\Pdf;
+use Exception;
 use Illuminate\Support\Facades\Date;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\Rule;
 
 class ManageInternsController extends Controller
 {
@@ -37,27 +42,18 @@ class ManageInternsController extends Controller
                     return $nilaiMagang;
                 })
                 ->editColumn('surat_pengantar', function ($row) {
-                    return '<a href="' . Storage::url('surat pengantar/' . $row['surat_pengantar']) . '" target="_blank"> ' . Str::limit($row['surat_pengantar'], 5) . ' </a>';
-                })
-                ->editColumn('approve_magang', function ($row) {
-                    if ($row['approve_magang'] === 'diproses') {
-                        return '<div class="badge badge-primary">' . $row['approve_magang'] . '</div>';
-                    } else if ($row['approve_magang'] == 'diterima') {
-                        return '<div class="badge badge-success">' . $row['approve_magang'] . '</div>';
-                    } else if ($row['approve_magang'] == 'ditolak') {
-                        return '<div class="badge badge-danger">' . $row['approve_magang'] . '</div>';
-                    }
+                    return '<a href="' . Storage::url('surat pengantar/' . $row['surat_pengantar']) . '" target="_blank"> ' . Str::limit($row['surat_pengantar'], 10) . ' </a>';
                 })
                 ->addColumn('name', function ($row) {
                     return $row->user->name;
                 })
                 ->addColumn('action', function ($row) {
                     return '
-                        <form action="' . route('delete-magang', $row['id']) . '" method="POST">
+                        <form action="' . route('magang.destroy', $row['id']) . '" method="POST">
                             ' . csrf_field() . '
                             ' . method_field('delete') . '
 
-                            <a href="' . route('edit-magang', $row['id']) . '" class="btn btn-sm btn-light">
+                            <a href="' . route('magang.edit', $row['id']) . '" class="btn btn-sm btn-light">
                               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
                                 <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
                                 <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
@@ -83,53 +79,181 @@ class ManageInternsController extends Controller
 
         return view('staff.manage-interns.index', ['type_menu' => 'internship']);
     }
+
+    // method untuk masuk ke halaman menambahkan peserta magang
+    public function create()
+    {
+        return view('staff.manage-interns.create', ['type_menu' => 'internship']);
+    }
+
+    // method untuk menyimpan data peserta magang
+    public function store(Request $request)
+    {
+        // dd($request);
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'username' => ['required', 'string', 'max:255', 'unique:' . User::class],
+            'password' => ['required', 'confirmed', Password::defaults()],
+            'no_telp' => 'required|numeric',
+            'no_induk' => 'required',
+            'asal_institusi' => 'required',
+            'jurusan' => 'required',
+            'bidang_diambil' => 'required',
+            'start_date' => 'required',
+            'end_date' => 'required',
+            'surat_pengantar' => 'required|mimes:pdf|max:5000',
+        ], [
+            'name.required' => 'Nama tidak boleh kosong!',
+            'validation.min.string' => 'Panjang password minimal 8 karakter',
+            'no_telp.required' => 'Nomor telepon tidak boleh kosong',
+            'no_telp.numeric' => 'Nomor telepon harus berisi angka saja',
+            'no_induk.required' => 'Nomor induk tidak boleh kosong',
+            'asal_institusi.required' => 'Asal institusi tidak boleh kosong',
+            'jurusan.required' => 'Jurusan tidak boleh kosong',
+            'bidang_diambil.required' => 'Bidang tidak boleh kosong',
+            'surat_pengantar.required' => 'Surat pengantar wajib di input',
+            'surat_pengantar.mimes' => 'Masukkan file berjenis PDF',
+            'surat_pengantar.max' => 'Maksimum file berukuran 5 MB',
+        ]);
+
+        // dd($validated);
+
+        // membuat tanggal dengan class Carbon
+        $validated['tanggal_awal_magang'] = Carbon::createFromFormat('m/d/Y', $validated['start_date']);
+        $validated['tanggal_akhir_magang'] = Carbon::createFromFormat('m/d/Y', $validated['end_date']);
+
+        // menyimpan file surat pengantar
+        $file = $request->file('surat_pengantar');
+        $namaFile =  Str::slug($validated['name'] . Str::random(5)) . $file->hashName();
+        $file->storeAs('surat pengantar', $namaFile, 'public');
+        $validated['surat_pengantar'] = $namaFile;
+
+        // try {
+        $user = new User();
+        $user['name'] = $validated['name'];
+        $user['username'] = $validated['username'];
+        $user['password'] = bcrypt($validated['password']);
+        $user['role'] = 'intern';
+
+        $user->save();
+
+        $internship = new Internship();
+        $internship['user_id'] = $user->id;
+        $internship['no_telp'] = $validated['no_telp'];
+        $internship['no_induk'] = $validated['no_induk'];
+        $internship['asal_institusi'] = $validated['asal_institusi'];
+        $internship['jurusan'] =  $validated['jurusan'];
+        $internship['bidang_diambil'] = $validated['bidang_diambil'];
+        $internship['surat_pengantar'] = $validated['surat_pengantar'];
+        $internship['tanggal_awal_magang'] = $validated['tanggal_awal_magang'];
+        $internship['tanggal_akhir_magang'] = $validated['tanggal_akhir_magang'];
+
+        $internship->save();
+
+        return redirect()->route('magang.index')->with('success', 'Sukses menambahkan peserta');
+        // } catch (Exception $e) {
+        // Storage::disk('public')->delete('surat pengantar/' . $validated['surat_pengantar']);
+        // return redirect()->route('magang.index')->with('error', 'Gagal menambahkan peserta');
+        // }
+    }
+
+    public function show($id) {}
     // method untuk menuju halaman edit data magang, edit disini hanya pada approve magang dan nilai magang
     public function edit($id)
     {
         // $data = Internship::with('user')->where('id', '=', $id)->get();
         $data = Internship::with('user')->find($id);
-        if (!$data) return redirect()->route('manage-magang')->with('error', 'Data tidak ditemukan!');
+        if (!$data) return redirect()->route('magang')->with('error', 'Data tidak ditemukan!');
         return view('staff.manage-interns.edit', ['type_menu' => 'internship', 'data' => $data]);
     }
     // method untuk melakukan penyimpanan setelah merubah data
     public function update(Request $request, $id)
     {
-        $validateData =  $request->validate([
-            'approve_magang' => ['nullable'],
-            'nilai_magang' => ['nullable', 'file', 'mimes:pdf']
+        // dd($request->all());
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'username' => ['required', 'string', 'max:255', Rule::unique(User::class)->ignore($request['user_id']),],
+            'password' => ['confirmed'],
+            'no_telp' => 'required|numeric',
+            'no_induk' => 'required',
+            'asal_institusi' => 'required',
+            'jurusan' => 'required',
+            'bidang_diambil' => 'required',
+            'start_date' => 'required',
+            'end_date' => 'required',
+            'surat_pengantar' => 'nullable|mimes:pdf,doc,docx|max:5000',
+            'nilai_magang' => 'nullable|mimes:pdf,doc,docx|max:5000',
+        ], [
+            'name.required' => 'Nama tidak boleh kosong!',
+            'validation.min.string' => 'Panjang password minimal 8 karakter',
+            'no_telp.required' => 'Nomor telepon tidak boleh kosong',
+            'no_telp.numeric' => 'Nomor telepon harus berisi angka saja',
+            'no_induk.required' => 'Nomor induk tidak boleh kosong',
+            'asal_institusi.required' => 'Asal institusi tidak boleh kosong',
+            'jurusan.required' => 'Jurusan tidak boleh kosong',
+            'bidang_diambil.required' => 'Bidang tidak boleh kosong',
+            'surat_pengantar.required' => 'Surat pengantar wajib di input',
+            'surat_pengantar.mimes' => 'Masukkan file berjenis PDF,doc, atau docx',
+            'nilai_magang.mimes' => 'Masukkan file berjenis PDF,doc, atau docx',
+            'surat_pengantar.max' => 'Maksimum file berukuran 5 MB',
+            'nilai_magang.max' => 'Maksimum file berukuran 5 MB',
         ]);
 
-        $data = Internship::find($id);
+        // dd($validated);
+        $internship = Internship::find($id);
 
-        if (!$data) {
-            return redirect()->route('manage-magang')->with('error', 'Data tidak ditemukan, Gagal mengubah!');
+        if (!$internship) {
+            return redirect()->route('magang.index')->with('error', 'Data tidak ditemukan, Gagal mengubah!');
         }
 
         if ($request->file('nilai_magang')) {
             // dd($request->file('nilai_magang'));
             // hapus file nilai terdahulu jika ada
-            if (Storage::fileExists('nilai magang/' . $data['nilai_magang'])) {
-                Storage::delete('nilai magang/' . $data['nilai_magang']);
+            if (Storage::fileExists('nilai magang/' . $internship['nilai_magang'])) {
+                Storage::delete('nilai magang/' . $internship['nilai_magang']);
             }
 
             $file = $request->file('nilai_magang');
-            $namaFile =  $data->user->name . ' ' . Date::now()->format('d M Y') . '.pdf';
+            $namaFile = 'nilai-' . $internship->user->name . ' ' . Date::now()->format('d M Y') . '.pdf';
             $file->storeAs('nilai magang', $namaFile, 'public');
-            $data['nilai_magang'] = $namaFile;
+            $internship['nilai_magang'] = $namaFile;
         }
 
-        if ($request['approve_magang']) {
-            $data['approve_magang'] = $validateData['approve_magang'];
+        if ($request->file('surat_pengantar')) {
+            Storage::disk('public')->delete('surat pengantar/' . $internship->surat_pengantar);
+            // menyimpan file surat pengantar
+            $file = $request->file('surat_pengantar');
+            $namaFile =  Str::slug($validated['name'] . Str::random(5)) . $file->hashName();
+            $file->storeAs('surat pengantar', $namaFile, 'public');
+            $internship->surat_pengantar = $namaFile;
         }
 
-        $data->save();
-        return redirect()->route('manage-magang')->with('success', 'Sukses mengubah data');
+        // mengupdate data-data yang ada
+        $internship['tanggal_awal_magang'] = Carbon::createFromFormat('m/d/Y', $validated['start_date']);
+        $internship['tanggal_akhir_magang'] = Carbon::createFromFormat('m/d/Y', $validated['end_date']);
+        $internship['no_telp'] = $validated['no_telp'];
+        $internship['no_induk'] = $validated['no_induk'];
+        $internship['asal_institusi'] = $validated['asal_institusi'];
+        $internship['jurusan'] = $validated['jurusan'];
+        $internship['bidang_diambil'] = $validated['bidang_diambil'];
+
+        $user = User::find($internship->user->id);
+        $user['name'] = $validated['name'];
+        $user['username'] = $validated['username'];
+        if ($validated['password']) {
+            $user['password'] = bcrypt($validated['password']);
+        }
+
+        $user->save();
+        $internship->save();
+        return redirect()->route('magang.index')->with('success', 'Sukses mengubah data');
     }
+
     //method untuk menghapus data magang sekaligus menghapus hal-hal yg berkaitan dengannya
     public function destroy($id)
     {
         $data = Internship::find($id);
-
+        $user = User::find($data->user->id);
         if (!$data) return redirect()->back()->with('error', 'Data tidak ditemukan!');
 
         Storage::disk('public')->delete('surat pengantar/' . $data->surat_pengantar);
@@ -138,10 +262,21 @@ class ManageInternsController extends Controller
             Storage::disk('public')->delete('nilai magang/' . $data->nilai_magang);
         }
 
-        $data->delete();
+        if (Storage::disk('public')->exists('foto profil/' . $user->photo_profile)) {
+            Storage::disk('public')->delete('foto profil/' . $user->photo_profile);
+        }
 
-        return redirect()->route('manage-magang')->with('success', 'Sukses menghapus dara magang!');
+        $reports = $data->reportWeeks;
+
+        foreach ($reports as $report) {
+            Storage::disk('public')->delete($report->foto);
+            $report->delete();
+        }
+        $data->delete();
+        $user->delete();
+        return redirect()->route('magang.index')->with('success', 'Sukses menghapus dara magang!');
     }
+
     // method untuk mendowload file surat pengantar, masih bingung apakah digunakan atau tidak
     public function download($namaFile)
     {
@@ -164,7 +299,7 @@ class ManageInternsController extends Controller
         $datas = Internship::all();
         $pdf = Pdf::loadView('staff.manage-interns.pdf', ['datas' => $datas]);
 
-        return $pdf->download('data.pdf');
+        return $pdf->download('data-magang-all.pdf');
     }
 
     public function exportDataToPDF($id)
@@ -174,6 +309,6 @@ class ManageInternsController extends Controller
 
         $pdf = Pdf::loadView('staff.manage-interns.pdf-single', ['data' => $internship]);
         $pdf->setPaper('a4');
-        return $pdf->download('single-data.pdf');
+        return $pdf->download('data-magang-' . $internship->user->name . '.pdf');
     }
 }

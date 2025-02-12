@@ -17,7 +17,7 @@
                 </li>
             @elseif (Auth::user()->role === 'staff')
                 <li class="nav-item {{ $type_menu === 'internship' ? 'active' : '' }}">
-                    <a href="{{ route('manage-magang') }}" class="nav-link"><i
+                    <a href="{{ route('magang.index') }}" class="nav-link"><i
                             class="fas fa-tasks"></i><span>Magang</span></a>
                 </li>
             @elseif (Auth::user()->internship)

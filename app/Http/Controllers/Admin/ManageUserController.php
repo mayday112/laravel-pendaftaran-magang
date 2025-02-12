@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use Exception;
 use App\Models\User;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules;

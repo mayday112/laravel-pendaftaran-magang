@@ -22,7 +22,7 @@
                             <div class="col-12 col-md-8 col-lg-8">
                                 <div class="card">
                                     <div class="card-header">
-                                        <h4>Data Pendaftaran Magang Anda</h4>
+                                        <h4>Data Magang Anda</h4>
                                     </div>
                                     <div class="card-body">
                                         {{-- Informasi Pemagang --}}
@@ -39,12 +39,6 @@
                                         <a id="surat-pengantar"
                                             href="{{ Storage::url('surat pengantar/' . $data->surat_pengantar) }}"
                                             target="_blank">{{ $data->surat_pengantar }}</a>
-                                        <p class="mt-2">Status : <span
-                                                class="badge
-                                                    @if ($data->approve_magang === 'diterima') badge-success
-                                                    @elseif ($data->approve_magang === 'ditolak') badge-danger
-                                                    @elseif ($data->approve_magang === 'diproses') badge-primary @endif">{{ $data->approve_magang }}</span>
-                                        </p>
                                         <p>Nilai : <a
                                                 href="{{ $data->nilai_magang ? Storage::url('nilai magang/' . $data->nilai_magang) : '#' }}"
                                                 target="_blank">{{ $data->nilai_magang ? $data->nilai_magang : 'Belum ada nilai' }}</a>
@@ -55,10 +49,7 @@
                                                 </div>
                                             @endif
                                         </p>
-                                    </div>
-
-                                    <div class="card-footer text-right">
-                                        <a href="{{ route('intern-edit-data') }}" class="btn btn-primary">Edit Data</a>
+                                        <div class="helper text-warning">Jika ada data yang tidak sesuai hubungi admin</div>
                                     </div>
                                 </div>
                             </div>

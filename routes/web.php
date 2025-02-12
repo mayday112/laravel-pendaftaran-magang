@@ -32,10 +32,15 @@ Route::middleware('auth')->group(function () {
     Route::post('/reset_password/{id}', [ManageUserController::class, 'resetPassword'])->name('reset-password')->middleware([IsAdmin::class]);
     // staff
     Route::middleware([CanEditInterns::class])->group(function () {
-        Route::get('/magang', [ManageInternsController::class, 'index'])->name('manage-magang');
-        Route::get('/magang/{Internship:id}', [ManageInternsController::class, 'edit'])->name('edit-magang');
-        Route::put('/magang/{Internship:id}', [ManageInternsController::class, 'update'])->name('update-magang');
-        Route::delete('/magang/{Internship:id}', [ManageInternsController::class, 'destroy'])->name('delete-magang');
+
+        Route::resource('magang', ManageInternsController::class);
+        // Route::get('/magang', [ManageInternsController::class, 'index'])->name('manage-magang');
+        // Route::post('/magang', [ManageInternsController::class, 'store'])->name('manage-magang.store');
+        // Route::get('/magang/create', [ManageInternsController::class, 'create'])->name('manage-magang.create');
+        // Route::get('/magang/{Internship:id}', [ManageInternsController::class, 'edit'])->name('edit-magang');
+        // Route::put('/magang/{Internship:id}', [ManageInternsController::class, 'update'])->name('update-magang');
+        // Route::delete('/magang/{Internship:id}', [ManageInternsController::class, 'destroy'])->name('delete-magang');
+
         Route::get('/magang-download-data-excel', [ManageInternsController::class, 'exportToExcel'])->name('export-excel');
         Route::get('/magang-download-data-pdf', [ManageInternsController::class, 'exportToPDF'])->name('export-pdf');
         Route::get('/magang-download-data-dompdf', [ManageInternsController::class, 'exportToPDFWithDOMPDF'])->name('export-dompdf');
@@ -44,25 +49,25 @@ Route::middleware('auth')->group(function () {
     //interns
     Route::middleware([IsIntern::class])->group(function () {
 
-        Route::get('intern/daftar', [RegistInternController::class, 'create'])->name('intern-create-data');
-        Route::post('intern/daftar', [RegistInternController::class, 'store'])->name('intern-store-data');
+        // Route::get('intern/daftar', [RegistInternController::class, 'create'])->name('intern-create-data');
+        // Route::post('intern/daftar', [RegistInternController::class, 'store'])->name('intern-store-data');
 
-        Route::middleware([IsAlreadyRegistInternship::class])->group(function () {
-            Route::get('/intern', [RegistInternController::class, 'index'])->name('intern');
+        // Route::middleware([IsAlreadyRegistInternship::class])->group(function () {
 
-            Route::get('intern/edit', [RegistInternController::class, 'edit'])->name('intern-edit-data');
-            Route::post('intern/edit', [RegistInternController::class, 'update'])->name('intern-update-data');
+        // Route::get('intern/edit', [RegistInternController::class, 'edit'])->name('intern-edit-data');
+        // Route::post('intern/edit', [RegistInternController::class, 'update'])->name('intern-update-data');
 
-            Route::get('intern/download-nilai/{Internship:nilai_magang}', [RegistInternController::class, 'download'])->name('intern-download-nilai');
+        Route::get('/intern', [RegistInternController::class, 'index'])->name('intern');
+        Route::get('intern/download-nilai/{Internship:nilai_magang}', [RegistInternController::class, 'download'])->name('intern-download-nilai');
 
-            Route::resource('report-weeks', AddReportWeekController::class);
-            Route::get('report-week/export-to-pdf', [AddReportWeekController::class, 'exportToPDF'])->name('report-to-pdf');
-            Route::get('report-week/export-to-excel', [AddReportWeekController::class, 'exportToExcel'])->name('report-to-excel');
-        });
+        Route::resource('report-weeks', AddReportWeekController::class);
+        Route::get('report-week/export-to-pdf', [AddReportWeekController::class, 'exportToPDF'])->name('report-to-pdf');
+        Route::get('report-week/export-to-excel', [AddReportWeekController::class, 'exportToExcel'])->name('report-to-excel');
+        // });
     });
 });
 
-Route::get('/test', function(){
+Route::get('/test', function () {
     $data = ReportWeek::all();
     return view('intern.report_weeks.pdf', ['datas' => $data]);
 });

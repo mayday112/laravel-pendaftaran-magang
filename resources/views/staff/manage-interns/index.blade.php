@@ -17,6 +17,7 @@
                 <div class="table-responsive">
                     <a href="{{ route('export-excel') }}" class="btn btn-success mb-5 float-end">Export to Excel</a>
                     <a href="{{ route('export-dompdf') }}" class="btn btn-danger mb-5 float-end">Export to PDF</a>
+                    <a href="{{ route('magang.create') }}" class="btn btn-primary mb-5 float-end">+Tambah Peserta</a>
                     <table class="table table-striped" id="myTable">
                         <thead>
                             <tr>
@@ -29,7 +30,6 @@
                                 <th scope="col">Surat Pengantar</th>
                                 {{-- <th scope="col">Tanggal Awal Magang</th>
                                 <th scope="col">Tanggal Akhir Magang</th> --}}
-                                <th scope="col">Approve</th>
                                 {{-- <th scope="col">Nilai Magang</th> --}}
                                 <th scope="col">Aksi</th>
                             </tr>
@@ -53,7 +53,7 @@
             var table = $('#myTable').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('manage-magang') }}", // Ubah route ke route yang sesuai dengan data mahasiswa
+                ajax: "{{ route('magang.index') }}", // Ubah route ke route yang sesuai dengan data mahasiswa
                 columns: [
                     {data: 'no_induk', name: 'no_induk'},
                     // {data: 'id', name: 'id'},
@@ -64,7 +64,7 @@
                     {data: 'surat_pengantar', name: 'surat_pengantar'},
                     // {data: 'tanggal_awal_magang', name: 'tanggal_awal_magang'},
                     // {data: 'tanggal_akhir_magang', name: 'tanggal_akhir_magang'},
-                    {data: 'approve_magang', name: 'approve_magang'},
+                    // {data: 'approve_magang', name: 'approve_magang'},
                     // {data: 'nilai_magang', name: 'nilai_magang'},
                     // {data: 'updated_at', name: 'updated_at'},
                     {data: 'action', name: 'action', orderable : false, searchable: false},
