@@ -12,9 +12,19 @@ class InternshipsExport implements FromQuery, WithMapping, WithHeadings
     /**
      * @return \Illuminate\Support\Collection
      */
+    private $tahun;
+    public function __construct($tahun = null)
+    {
+        $this->tahun = $tahun;
+    }
+
     public function query()
     {
-        return Internship::query();
+        if($this->tahun){
+            return Internship::query()->whereYear('created_at',$this->tahun);
+        }else{
+            return Internship::query();
+        }
     }
 
     public function map($internship): array

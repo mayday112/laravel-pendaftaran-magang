@@ -291,12 +291,21 @@ class ManageInternsController extends Controller
 
     public function exportToExcel()
     {
-        return Excel::download(new InternshipsExport, 'data-pendaftaran-magang-' . Date::now()->format('d-M-Y') . '.xlsx');
+        $tahun = request('tahun');
+        if($tahun){
+            return Excel::download(new InternshipsExport($tahun), 'data-pendaftaran-magang-' . Date::now()->format('d-M-Y') . '.xlsx');
+        } else{
+            return Excel::download(new InternshipsExport(), 'data-pendaftaran-magang-' . Date::now()->format('d-M-Y') . '.xlsx');
+        }
     }
 
     public function exportToPDFWithDOMPDF()
     {
-        $datas = Internship::all();
+        $tahun = request('tahun');
+        $datas = Internship::query();
+        if($tahun) $datas->whereYear('created_at', $tahun);
+        $datas = $datas->get();
+
         $pdf = Pdf::loadView('staff.manage-interns.pdf', ['datas' => $datas]);
 
         return $pdf->download('data-magang-all.pdf');

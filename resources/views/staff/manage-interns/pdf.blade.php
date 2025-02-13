@@ -66,6 +66,13 @@
                         <td>{{ $data->tanggal_akhir_magang->format('d-M-Y') }}</td>
                     </tr>
                 @empty
+                    <tr>
+                        <td colspan="8">
+                            <center>
+                                Data Tahun ini kosong
+                            </center>
+                        </td>
+                    </tr>
                 @endforelse
             </tbody>
         </table>
